@@ -127,3 +127,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ─── Muted Enterprise — Provider Search ────────────────────────────────────── */
+:root {
+  --provider-navy: #1E3A5F;
+  --provider-navy-muted: #2D4E7A;
+  --provider-slate: #94A3B8;
+  --provider-slate-light: #CBD5E1;
+  --provider-surface: #F1F5F9;
+  --provider-surface-hover: #E8EEF6;
+  --provider-risk-low: #166534;
+  --provider-risk-low-bg: #DCFCE7;
+  --provider-risk-medium: #92400E;
+  --provider-risk-medium-bg: #FEF3C7;
+  --provider-risk-high: #991B1B;
+  --provider-risk-high-bg: #FEE2E2;
+}

@@ -79,3 +79,51 @@ export interface DoctorProfile {
   phone: string
   photo: string
 }
+
+// ─── Provider Search ───────────────────────────────────────────────────────────
+
+export type ProviderRisk = "low" | "medium" | "high"
+
+export type Region =
+  | "Western New York"
+  | "Long Island"
+  | "New York City"
+  | "Hudson Valley"
+  | "Capital Region"
+  | "Central New York"
+  | "North Country"
+  | "Southern Tier"
+  | "Finger Lakes"
+  | "Mohawk Valley"
+
+export type Specialty =
+  | "Cardiology"
+  | "Internal Medicine"
+  | "Orthopedics"
+  | "Neurology"
+  | "Oncology"
+  | "Pediatrics"
+  | "Psychiatry"
+  | "Radiology"
+  | "General Surgery"
+  | "Family Medicine"
+  | "Endocrinology"
+  | "Nephrology"
+  | "Pulmonology"
+  | "Gastroenterology"
+
+export interface BillingCode {
+  code: string
+  description: string
+  usageCount: number
+}
+
+export interface Provider {
+  npi: string
+  firstName: string
+  lastName: string
+  organization: string
+  specialty: Specialty
+  region: Region
+  billingCodes: BillingCode[]
+}

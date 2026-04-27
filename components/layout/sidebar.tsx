@@ -10,12 +10,14 @@ import {
   MessageSquare,
   User,
   Activity,
+  Stethoscope,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
   { icon: Users, label: "Patients", href: "/patients" },
+  { icon: Stethoscope, label: "Provider Search", href: "/providers" },
   { icon: AlertTriangle, label: "Alerts", href: "/alerts" },
   { icon: BarChart3, label: "Analytics", href: "/analytics" },
   { icon: MessageSquare, label: "Messages", href: "/messages" },
