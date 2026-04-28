@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Bell, MessageSquare, Search, User, AlertTriangle, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,8 +18,14 @@ import { cn } from "@/lib/utils"
 import Link from "next/link"
 
 export function Header() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
   const unreadCount = notifications.filter((n) => !n.read).length
+
+  function handleSignOut() {
+    sessionStorage.clear()
+    router.push("/login")
+  }
 
   return (
     <header className="fixed top-0 right-0 left-64 z-30 flex h-16 items-center justify-between gap-4 border-b border-border bg-card px-6">
@@ -106,7 +113,7 @@ export function Header() {
             </DropdownMenuItem>
             <DropdownMenuItem>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Sign out</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>Sign out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
