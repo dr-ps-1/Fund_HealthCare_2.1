@@ -1,33 +1,22 @@
-import { AppShell } from "@/components/layout/app-shell"
-import { SummaryCards } from "@/components/dashboard/summary-cards"
-import { PatientPriorityList } from "@/components/dashboard/patient-priority-list"
-import { AlertsFeed } from "@/components/dashboard/alerts-feed"
-import { AIInsightsWidget } from "@/components/dashboard/ai-insights-widget"
+"use client"
 
-export default function DashboardPage() {
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Loader2 } from "lucide-react"
+
+/** Product entry: login, or the panel if the clinician session is already open. */
+export default function HomePage() {
+  const router = useRouter()
+
+  useEffect(() => {
+    const loggedIn = sessionStorage.getItem("isLoggedIn") === "true"
+    router.replace(loggedIn ? "/doctor" : "/login")
+  }, [router])
+
   return (
-    <AppShell>
-      <div className="flex flex-col gap-6">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Overview of your patients and alerts
-          </p>
-        </div>
-
-        <SummaryCards />
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <PatientPriorityList />
-          </div>
-          <div className="flex flex-col gap-6">
-            <AIInsightsWidget />
-          </div>
-        </div>
-
-        <AlertsFeed />
-      </div>
-    </AppShell>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-background text-muted-foreground">
+      <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <p className="text-sm">Opening clinician workspace…</p>
+    </div>
   )
 }

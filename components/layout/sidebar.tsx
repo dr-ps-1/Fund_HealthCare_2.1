@@ -1,106 +1,109 @@
 "use client"
 
+import { useMemo } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { User } from "lucide-react"
+import {
+  Activity,
+  Bell,
+  CalendarDays,
+  HeartPulse,
+  LayoutDashboard,
+  MessageSquare,
+  User,
+  Users,
+} from "lucide-react"
+import { useClinicianDataOptional } from "@/components/providers/clinician-data-provider"
+import { toLocalDateIso } from "@/lib/calendar"
 import { cn } from "@/lib/utils"
+import { notifyRouteChange } from "@/lib/route-overlay"
 
 const menuItems = [
-  {
-    label: "Dashboard",
-    href: "/",
-    icon: "/5.1 Public Health Prevention.png",
-  },
-  {
-    label: "Patients",
-    href: "/patients",
-    icon: "/2.1 Remote Patient Monitoring System.png",
-  },
-  {
-    label: "Provider Search",
-    href: "/providers",
-    icon: "/5.3 Fraud&Integrity Layer.png",
-  },
-  {
-    label: "Alerts",
-    href: "/alerts",
-    icon: "/3.2 Fraud signals& Investigation Prioritization.png",
-  },
-  {
-    label: "Analytics",
-    href: "/analytics",
-    icon: "/1.2 Review Your Treatment & Get Clarity.png",
-  },
-  {
-    label: "Messages",
-    href: "/messages",
-    icon: "/2.2 AI Documentation & Coding Assistant (1).png",
-  },
+  { label: "Panel", href: "/doctor", icon: LayoutDashboard },
+  { label: "Calendar", href: "/calendar", icon: CalendarDays },
+  { label: "Patients", href: "/patients", icon: Users },
+  { label: "Alerts", href: "/alerts", icon: Bell },
+  { label: "Analytics", href: "/analytics", icon: Activity },
+  { label: "Messages", href: "/messages", icon: MessageSquare },
 ]
 
-export function Sidebar() {
+export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
+  const { calendarAppointments } = useClinicianDataOptional()
+  const todayVisitCount = useMemo(() => {
+    const today = toLocalDateIso()
+    return calendarAppointments.filter(
+      (appointment) => (appointment.appointmentDate ?? today) === today
+    ).length
+  }, [calendarAppointments])
 
   return (
-    <aside className="fixed left-0 top-0 z-40 h-screen w-64 bg-card border-r border-border">
-      {/* Logo */}
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-border bg-card">
       <div className="flex h-16 items-center gap-3 border-b border-border px-5">
-        <Image
-          src="/1.1 AI Health Assistant.png"
-          alt="AI Health Assistant"
-          width={36}
-          height={36}
-          className="shrink-0"
-        />
-        <span className="text-base font-semibold text-foreground leading-tight">
-          AI Health Monitor
-        </span>
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-navy text-brand-navy-foreground">
+          <HeartPulse className="h-5 w-5" />
+        </div>
+        <div className="leading-tight">
+          <span className="text-base font-semibold text-foreground">iHealth</span>
+          <p className="text-[11px] text-muted-foreground">Clinician workspace</p>
+        </div>
       </div>
 
-      <nav className="flex flex-col gap-1 p-4">
+      <nav className="flex flex-1 flex-col gap-1 p-3">
         {menuItems.map((item) => {
           const isActive =
             pathname === item.href ||
-            (item.href !== "/" && pathname.startsWith(item.href))
+            (item.href !== "/doctor" && pathname.startsWith(item.href)) ||
+            (item.href === "/doctor" && pathname === "/doctor")
+          const Icon = item.icon
           return (
             <Link
               key={item.href}
               href={item.href}
+              onClick={() => {
+                notifyRouteChange()
+                onNavigate?.()
+              }}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "border-brand-navy bg-brand-navy-muted text-brand-navy"
+                  : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
               )}
             >
-              <Image
-                src={item.icon}
-                alt={item.label}
-                width={20}
-                height={20}
-                className={cn(
-                  "shrink-0",
-                  isActive ? "brightness-0 invert" : ""
-                )}
-              />
-              {item.label}
+              <Icon className="h-4 w-4 shrink-0" />
+              <span className="flex-1">{item.label}</span>
+              {item.href === "/calendar" && todayVisitCount > 0 && (
+                <span
+                  className={cn(
+                    "flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-[11px] font-medium tabular-nums",
+                    isActive
+                      ? "bg-brand-navy text-brand-navy-foreground"
+                      : "bg-muted text-foreground"
+                  )}
+                >
+                  {todayVisitCount}
+                </span>
+              )}
             </Link>
           )
         })}
 
-        {/* Profile — no matching product icon */}
         <Link
           href="/profile"
+          onClick={() => {
+            notifyRouteChange()
+            onNavigate?.()
+          }}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+            "mt-auto flex items-center gap-3 rounded-lg border-l-2 px-3 py-2.5 text-sm font-medium transition-colors",
             pathname === "/profile"
-              ? "bg-primary text-primary-foreground"
-              : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+              ? "border-brand-navy bg-brand-navy-muted text-brand-navy"
+              : "border-transparent text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
-          <User className="h-5 w-5 shrink-0" />
-          Profile
+          <User className="h-4 w-4 shrink-0" />
+          Account
         </Link>
       </nav>
     </aside>

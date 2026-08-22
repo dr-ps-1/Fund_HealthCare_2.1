@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { AppShell } from "@/components/layout/app-shell"
+import { PageHeader } from "@/components/layout/page-header"
 import { ProviderSearchBar } from "@/components/providers/provider-search-bar"
 import { ProviderFilters } from "@/components/providers/provider-filters"
 import { ProviderResultsTable } from "@/components/providers/provider-results-table"
@@ -16,7 +17,7 @@ export default function ProviderSearchPage() {
     const q = query.trim().toLowerCase()
 
     return providers.filter((p) => {
-      // Поиск: 10 цифр → NPI, иначе по имени и организации
+      // 10-digit query matches NPI; otherwise name or organization
       const matchesQuery =
         q === "" ||
         (/^\d{10}$/.test(q)
@@ -42,23 +43,11 @@ export default function ProviderSearchPage() {
         className="flex flex-col gap-6"
         style={{ color: "var(--provider-navy)" }}
       >
-        {/* Header */}
-        <div>
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "var(--provider-navy)" }}
-          >
-            Provider Search
-          </h1>
-          <p
-            className="mt-1 text-sm"
-            style={{ color: "var(--provider-slate)" }}
-          >
-            Search and filter healthcare providers across New York State
-          </p>
-        </div>
+        <PageHeader
+          title="Provider search"
+          description="Search and filter healthcare providers · NPI registry context"
+        />
 
-        {/* Search + Filters */}
         <div
           className="rounded-xl border p-5 flex flex-col gap-4"
           style={{

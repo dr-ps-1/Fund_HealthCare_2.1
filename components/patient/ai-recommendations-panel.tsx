@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { AlertCircle, Check, Forward } from "lucide-react"
+import { Check, ClipboardCheck, Forward } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import type { AIRecommendation } from "@/lib/types"
@@ -30,19 +30,19 @@ export function AIRecommendationsPanel({
   }
 
   return (
-    <Card className="border-[#F59E0B]/30 bg-[#F59E0B]/5">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <AlertCircle className="h-5 w-5 text-[#F59E0B]" />
-          AI Recommendations
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="flex items-center gap-2 text-base">
+          <ClipboardCheck className="h-4 w-4 text-muted-foreground" />
+          Care recommendations
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2">
           {activeRecommendations.map((rec) => (
             <div
               key={rec.id}
-              className="flex items-start gap-3 rounded-lg border border-[#F59E0B]/30 bg-card p-3"
+              className="flex items-start gap-3 rounded-lg border border-border bg-muted/30 p-3"
             >
               <p className="flex-1 text-sm text-foreground">{rec.text}</p>
               <div className="flex shrink-0 gap-1">
@@ -54,7 +54,7 @@ export function AIRecommendationsPanel({
                 >
                   <Check className="h-4 w-4" />
                 </Button>
-                <Button size="sm" variant="ghost" title="Send to Supervisor">
+                <Button size="sm" variant="ghost" title="Forward">
                   <Forward className="h-4 w-4" />
                 </Button>
               </div>

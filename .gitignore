@@ -12,11 +12,18 @@ node_modules/
 .pnpm-store/
 
 # ──────────────────────────────────────────────
-# Environment variables
+# Environment variables (keep .env.example)
 # ──────────────────────────────────────────────
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.json
+service-account*.json
 
 # ──────────────────────────────────────────────
 # TypeScript
@@ -39,9 +46,12 @@ coverage/
 .nyc_output/
 
 # ──────────────────────────────────────────────
-# Vercel / v0
+# Vercel / v0 / caches
 # ──────────────────────────────────────────────
 .vercel/
+.turbo/
+.cache/
+dist/
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
@@ -50,18 +60,26 @@ __v0_jsx-dev-runtime.ts
 next.user-config.*
 
 # ──────────────────────────────────────────────
-# IDE
+# IDE / editors
 # ──────────────────────────────────────────────
 .idea/
 .vscode/
 *.swp
 *.swo
 
+# Cursor — local project state and MCP config (can contain tokens).
+# User settings live in ~/.cursor and are outside this repo.
+.cursor/
+.cursorrules
+
 # ──────────────────────────────────────────────
 # OS
 # ──────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
 # ──────────────────────────────────────────────
 # Python (local venv, not needed in repo)

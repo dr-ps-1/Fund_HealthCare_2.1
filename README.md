@@ -1,58 +1,60 @@
-# AVB Provider Search — Healthcare Dashboard
+# iHealth Platform
 
-An AI-powered patient monitoring and provider search dashboard for healthcare professionals. Built as a demonstration platform for fund healthcare initiatives across New York State.
+Clinician workspace for attributed-panel management: roster, alerts, calendar, visit prep, messaging, and population views. Built as a **demonstration** platform — not production EHR software.
+
+Entry: `/` → `/login` → `/doctor`.
 
 ## Features
 
-- **Secure Patient Portal** — login page with session-based auth guard; all routes are protected
-- **Patient Monitoring** — real-time risk scores, alerts, timelines, and AI-generated summaries
-- **Provider Search** — search by NPI number, provider name, or organization with regional and specialty filters
-- **Risk Indicators** — visual risk markers based on billing code usage frequency
-- **Messaging** — direct communication between doctors and patients
+- **Clinician panel** — roster, risk, visit gaps, quality signals
+- **Visit prep** — AI pre-visit brief (Groq when configured, otherwise mock)
+- **Alerts & inbox** — workqueue for the attributed panel
+- **Calendar** — today’s visits and scheduling
+- **Secure messaging** — clinician ↔ patient threads (mock or Supabase)
+- **Provider search** — NPI / name / organization
+- **B2B shells** — employer, insurance, and government demos at `/employer`, `/insurance`, `/government`
 
-## Tech Stack
+## Tech stack
 
-- [Next.js 16](https://nextjs.org) — App Router, React 19
-- [TypeScript](https://www.typescriptlang.org) 5.7
-- [Tailwind CSS](https://tailwindcss.com) v4 + [shadcn/ui](https://ui.shadcn.com)
-- [Lucide React](https://lucide.dev) icons
+- [Next.js 16](https://nextjs.org) (App Router) + React 19
+- TypeScript 5.7, Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com)
+- Optional: [Groq](https://console.groq.com) for AI briefs, [Supabase](https://supabase.com) for persistence
 
-## Getting Started
+## Getting started
 
 **Prerequisites:** Node.js 18+ and [pnpm](https://pnpm.io)
 
 ```bash
-# Install dependencies
 pnpm install
-
-# Start development server
+cp .env.example .env
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. You will be redirected to the login page.
-
-**Demo credentials:** `sarah.wilson@clinic.com` / `123`
+Open [http://localhost:3000](http://localhost:3000).
 
 | Command | Description |
 |---|---|
-| `pnpm dev` | Start dev server |
+| `pnpm dev` | Dev server |
 | `pnpm build` | Production build |
-| `pnpm lint` | Run ESLint |
+| `pnpm lint` | Typecheck (`tsc --noEmit`) |
+| `pnpm run db:apply-ihealth-migrations` | Apply SQL in `database/` |
 
-## Auth Flow
+### Environment
 
-Authentication is client-side and session-based (no backend). On login, `sessionStorage.isLoggedIn` is set to `true`. The `AuthGuard` component in `AppShell` redirects unauthenticated users to `/login` on every route. Sign out clears the session and returns to `/login`.
+See `.env.example`. Never commit `.env` or `.env.local`.
 
-## Branding
+- **`GROQ_API_KEY`** — optional. Without it, Patient Assistant and Pre-visit Brief use mock fallbacks.
+- **Supabase** — optional. Copy the same project URL and keys used by Vita AI. See `database/README.md`. Without it, the clinician panel stays on mock data.
+- **`NEXT_PUBLIC_VITA_PATIENT_URL`** — Vita patient portal (module 1.1). Default if unset: `http://localhost:3001/dashboard`. Set empty to use the built-in demo at `/patient/local` only.
 
-Product-specific PNG icons are served from `public/` and mapped to sidebar sections by semantic meaning:
+## Demo login
 
-| Section | Icon |
-|---|---|
-| Dashboard | 5.1 Public Health Prevention |
-| Patients | 2.1 Remote Patient Monitoring System |
-| Provider Search | 5.3 Fraud & Integrity Layer |
-| Alerts | 3.2 Fraud Signals & Investigation |
-| Analytics | 1.2 Review Your Treatment & Get Clarity |
-| Messages | 2.2 AI Documentation & Coding Assistant |
-| Sidebar logo | 1.1 AI Health Assistant |
+This app uses **client-side session auth only** (`sessionStorage`). There is no server-side identity check on API routes.
+
+**Credentials:** `sarah.wilson@clinic.com` / `123`
+
+Do not deploy this build to the public internet with real patient data, a live Groq key, or a production Supabase project. Demo patients in `shared-data/` and `public/demo/` are synthetic.
+
+## Auth model
+
+On login, `sessionStorage.isLoggedIn` is set. `AuthGuard` redirects the UI to `/login`. Sign out clears the session. This is sufficient for a local/demo walkthrough, not for HIPAA production.

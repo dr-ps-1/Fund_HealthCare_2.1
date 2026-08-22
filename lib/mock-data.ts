@@ -1,157 +1,100 @@
 import type {
-  Patient,
   Alert,
-  TimelineEvent,
   Message,
   Notification,
-  AISummary,
   AIRecommendation,
   DoctorProfile,
   Provider,
-  Region,
-  Specialty,
 } from "./types"
+import { SARAH_VISIT_GAP_DAYS } from "./patient-health-profile"
+import {
+  DEMO_SECONDARY_PATIENT_ID,
+  DEMO_STAR_PATIENT_ID,
+} from "./demo-patients"
+import {
+  getDemoPatients,
+  getTimelineEvents,
+  getAiSummaries,
+  getPreVisitBriefs,
+} from "./resolve-demo-dates"
 
-export const patients: Patient[] = [
-  {
-    id: "1",
-    name: "John Smith",
-    age: 67,
-    photo: "/avatars/patient-1.jpg",
-    condition: "Diabetes Type 2",
-    diagnosis: "Type 2 Diabetes Mellitus with hypertension",
-    riskScore: 82,
-    status: "red",
-    lastActivity: "2 hours ago",
-    lastUpdate: "2024-01-15T10:30:00",
-    adherenceScore: 65,
-  },
-  {
-    id: "2",
-    name: "Maria Garcia",
-    age: 54,
-    photo: "/avatars/patient-2.jpg",
-    condition: "Cardiovascular",
-    diagnosis: "Chronic Heart Failure, NYHA Class II",
-    riskScore: 71,
-    status: "red",
-    lastActivity: "4 hours ago",
-    lastUpdate: "2024-01-15T08:15:00",
-    adherenceScore: 72,
-  },
-  {
-    id: "3",
-    name: "Robert Johnson",
-    age: 72,
-    photo: "/avatars/patient-3.jpg",
-    condition: "COPD",
-    diagnosis: "Chronic Obstructive Pulmonary Disease, Stage III",
-    riskScore: 58,
-    status: "yellow",
-    lastActivity: "1 day ago",
-    lastUpdate: "2024-01-14T16:45:00",
-    adherenceScore: 85,
-  },
-  {
-    id: "4",
-    name: "Emily Chen",
-    age: 45,
-    photo: "/avatars/patient-4.jpg",
-    condition: "Hypertension",
-    diagnosis: "Essential Hypertension, Stage 2",
-    riskScore: 45,
-    status: "yellow",
-    lastActivity: "6 hours ago",
-    lastUpdate: "2024-01-15T06:00:00",
-    adherenceScore: 90,
-  },
-  {
-    id: "5",
-    name: "Michael Brown",
-    age: 61,
-    photo: "/avatars/patient-5.jpg",
-    condition: "Diabetes Type 2",
-    diagnosis: "Type 2 Diabetes with neuropathy",
-    riskScore: 38,
-    status: "green",
-    lastActivity: "3 hours ago",
-    lastUpdate: "2024-01-15T09:20:00",
-    adherenceScore: 95,
-  },
-  {
-    id: "6",
-    name: "Sarah Wilson",
-    age: 58,
-    photo: "/avatars/patient-6.jpg",
-    condition: "Cardiovascular",
-    diagnosis: "Atrial Fibrillation, Stable",
-    riskScore: 28,
-    status: "green",
-    lastActivity: "12 hours ago",
-    lastUpdate: "2024-01-15T00:30:00",
-    adherenceScore: 98,
-  },
-  {
-    id: "7",
-    name: "David Lee",
-    age: 49,
-    photo: "/avatars/patient-7.jpg",
-    condition: "Hypertension",
-    diagnosis: "Controlled Hypertension",
-    riskScore: 22,
-    status: "green",
-    lastActivity: "1 day ago",
-    lastUpdate: "2024-01-14T14:00:00",
-    adherenceScore: 92,
-  },
-  {
-    id: "8",
-    name: "Jennifer Martinez",
-    age: 63,
-    photo: "/avatars/patient-8.jpg",
-    condition: "COPD",
-    diagnosis: "COPD with acute exacerbation history",
-    riskScore: 67,
-    status: "yellow",
-    lastActivity: "5 hours ago",
-    lastUpdate: "2024-01-15T07:30:00",
-    adherenceScore: 78,
-  },
-]
+export {
+  getDemoPatients,
+  getTimelineEvents,
+  getAiSummaries,
+  getPreVisitBriefs,
+}
 
-export const alerts: Alert[] = [
+/** High-signal red flags for the doctor home demo (top of triage). */
+export function getRedFlagAlerts(): Alert[] {
+  const sarah = getDemoPatients().find((p) => p.id === DEMO_SECONDARY_PATIENT_ID)
+  const ava = getDemoPatients().find((p) => p.id === DEMO_STAR_PATIENT_ID)
+  const lastVisitLabel = sarah?.lastVisitDate ?? "recently"
+  return [
+    {
+      id: "rf0",
+      patientId: DEMO_STAR_PATIENT_ID,
+      patientName: ava?.name ?? "Ava Jackson",
+      type: "vitals",
+      severity: "medium",
+      headline: "Ava Jackson — home BP above RPM baseline; review before visit.",
+      cause:
+        "Connected cuff: morning readings above onboarding baseline for several days. Rescue inhaler logged twice in 10 days.",
+      metric: "BP 152/88 · RPM",
+      time: "Just now",
+      status: "active",
+    },
+    {
+      id: "rf1",
+      patientId: DEMO_SECONDARY_PATIENT_ID,
+      patientName: "Sarah Johnson",
+      type: "vitals",
+      severity: "high",
+      headline: `Sarah Johnson — HbA1c critically high. ${SARAH_VISIT_GAP_DAYS} days without a visit.`,
+      cause: `Last HbA1c 9.2% (target <7%). No ambulatory encounter since ${lastVisitLabel}.`,
+      metric: `HbA1c 9.2% · ${SARAH_VISIT_GAP_DAYS} days`,
+      time: "Just now",
+      status: "active",
+    },
   {
-    id: "a1",
-    patientId: "1",
-    patientName: "John Smith",
-    type: "vitals",
-    severity: "high",
-    headline: "Blood Pressure Spike Detected",
-    cause: "BP reading significantly above threshold",
-    metric: "BP: 180/110 mmHg",
-    time: "10 minutes ago",
-    status: "active",
-  },
-  {
-    id: "a2",
+    id: "rf2",
     patientId: "2",
     patientName: "Maria Garcia",
     type: "behavior",
     severity: "high",
-    headline: "Missed Medication - 3 Days",
-    cause: "Patient has not logged medication intake",
+    headline: "Maria Garcia — missed HF meds 3 days; rising fatigue.",
+    cause: "Carvedilol/furosemide adherence gap with worsening fatigue reports.",
+    metric: "3 missed days",
     time: "1 hour ago",
     status: "active",
   },
   {
-    id: "a3",
-    patientId: "1",
-    patientName: "John Smith",
+    id: "rf3",
+    patientId: "8",
+    patientName: "Jennifer Martinez",
     type: "ai",
     severity: "medium",
-    headline: "AI: Deterioration Pattern Detected",
-    cause: "Multiple indicators suggest worsening condition",
-    time: "2 hours ago",
+    headline: "Jennifer Martinez — COPD risk rising; activity down, SpO2 soft.",
+    cause: "AI pattern: reduced steps + borderline SpO2 after recent exacerbation.",
+    metric: "SpO2 trend",
+    time: "3 hours ago",
+    status: "active",
+  },
+  ]
+}
+
+export const alerts: Alert[] = [
+  ...getRedFlagAlerts(),
+  {
+    id: "a1",
+    patientId: "1",
+    patientName: "Sarah Johnson",
+    type: "vitals",
+    severity: "high",
+    headline: "Home BP spike",
+    cause: "Morning home reading above threshold",
+    metric: "BP: 168/102 mmHg",
+    time: "10 minutes ago",
     status: "active",
   },
   {
@@ -166,83 +109,26 @@ export const alerts: Alert[] = [
     time: "4 hours ago",
     status: "active",
   },
-  {
-    id: "a5",
-    patientId: "8",
-    patientName: "Jennifer Martinez",
-    type: "ai",
-    severity: "low",
-    headline: "AI: Activity Pattern Change",
-    cause: "Reduced physical activity detected",
-    time: "6 hours ago",
-    status: "active",
-  },
-]
-
-export const timelineEvents: TimelineEvent[] = [
-  {
-    id: "t1",
-    patientId: "1",
-    type: "device",
-    date: "2024-01-15T10:30:00",
-    headline: "Blood Pressure Reading",
-    description: "BP: 180/110 mmHg - Above threshold",
-    fullText: "Automated reading from home BP monitor. Systolic pressure significantly elevated. Patient reported feeling dizzy.",
-  },
-  {
-    id: "t2",
-    patientId: "1",
-    type: "symptom",
-    date: "2024-01-15T09:00:00",
-    headline: "Patient Reported Headache",
-    description: "Moderate headache since morning",
-    fullText: "Patient reported via AI assistant: Experiencing moderate headache (6/10 pain scale) since waking up. No visual disturbances.",
-  },
-  {
-    id: "t3",
-    patientId: "1",
-    type: "ai",
-    date: "2024-01-15T08:00:00",
-    headline: "AI Check-in Summary",
-    description: "Morning wellness check completed",
-    fullText: "Patient completed morning check-in. Mood: Fair. Sleep quality: Poor (4 hours). Energy level: Low. AI flagged potential correlation with medication timing.",
-  },
-  {
-    id: "t4",
-    patientId: "1",
-    type: "note",
-    date: "2024-01-14T14:30:00",
-    headline: "Doctor Note: Medication Review",
-    description: "Discussed medication adjustments",
-    fullText: "Reviewed current medication regimen with patient. Discussed importance of consistent timing. Patient agreed to set daily reminders. Follow-up in 1 week.",
-  },
-  {
-    id: "t5",
-    patientId: "1",
-    type: "visit",
-    date: "2024-01-10T10:00:00",
-    headline: "In-Person Visit",
-    description: "Routine follow-up appointment",
-    fullText: "Physical examination: Stable. Weight: 185 lbs (up 3 lbs). BP in clinic: 145/92. Discussed lifestyle modifications. Labs ordered.",
-  },
 ]
 
 export const messages: Message[] = [
   {
     id: "m1",
     patientId: "1",
-    patientName: "John Smith",
+    patientName: "Sarah Johnson",
     patientPhoto: "/avatars/patient-1.jpg",
-    content: "Dr. Wilson, I took my BP reading this morning and it was quite high. Should I be concerned?",
+    content:
+      "Dr. Wilson, my home BP was high this morning and I feel more tired. Should I come in?",
     time: "10:35 AM",
     isFromDoctor: false,
   },
   {
     id: "m2",
     patientId: "1",
-    patientName: "John Smith",
+    patientName: "Sarah Johnson",
     patientPhoto: "/avatars/patient-1.jpg",
-    content: "I see your reading, John. Please rest and avoid strenuous activity. I will review and get back to you shortly.",
+    content:
+      "Thank you for reporting this, Sarah. Please rest, take medications as prescribed, and we will review your chart and reach out today.",
     time: "10:42 AM",
     isFromDoctor: true,
   },
@@ -264,15 +150,43 @@ export const messages: Message[] = [
     time: "Yesterday",
     isFromDoctor: false,
   },
+  {
+    id: "m5",
+    patientId: "9",
+    patientName: "Ava Jackson",
+    patientPhoto: "/avatars/patient-2.jpg",
+    content:
+      "Good morning Dr. Wilson — home BP averaged 152/88 this week. Anything I should change before our visit?",
+    time: "8:20 AM",
+    isFromDoctor: false,
+  },
+  {
+    id: "m6",
+    patientId: "9",
+    patientName: "Ava Jackson",
+    patientPhoto: "/avatars/patient-2.jpg",
+    content:
+      "Thanks Ava — continue current meds, log morning readings, and we will review RPM data at your appointment.",
+    time: "8:35 AM",
+    isFromDoctor: true,
+  },
 ]
 
 export const notifications: Notification[] = [
-  {
-    id: "n1",
-    type: "alert",
-    title: "High Priority Alert",
-    description: "John Smith: Blood pressure spike detected",
-    time: "10 min ago",
+    {
+      id: "n1",
+      type: "alert",
+      title: "RPM panel flag",
+      description: "Ava Jackson: home BP 152/88 · connected device sync",
+      time: "Just now",
+      read: false,
+    },
+    {
+      id: "n1b",
+      type: "alert",
+      title: "Urgent panel flag",
+      description: `Sarah Johnson: HbA1c critical · ${SARAH_VISIT_GAP_DAYS} days without visit`,
+    time: "Just now",
     read: false,
   },
   {
@@ -287,7 +201,7 @@ export const notifications: Notification[] = [
     id: "n3",
     type: "system",
     title: "Weekly Report Ready",
-    description: "Your patient analytics report is ready",
+    description: "Your patient panel analytics report is ready",
     time: "2 hours ago",
     read: true,
   },
@@ -301,49 +215,23 @@ export const notifications: Notification[] = [
   },
 ]
 
-export const aiSummaries: Record<string, AISummary> = {
-  "1": {
-    patientId: "1",
-    title: "Weekly Summary",
-    insights: [
-      "Blood pressure trending upward over past 7 days",
-      "Medication adherence at 65% (below target)",
-      "Sleep patterns irregular - averaging 5.2 hours",
-      "Reported headaches 3 times this week",
-      "Physical activity decreased by 40%",
-    ],
-    generatedAt: "2024-01-15T06:00:00",
-  },
-  "2": {
-    patientId: "2",
-    title: "Weekly Summary",
-    insights: [
-      "Heart rate variability within normal range",
-      "Missed medication doses: 3 in past week",
-      "Fatigue levels reported as increasing",
-      "Weight stable at 142 lbs",
-    ],
-    generatedAt: "2024-01-15T06:00:00",
-  },
-}
-
 export const aiRecommendations: AIRecommendation[] = [
   {
     id: "r1",
     patientId: "1",
-    text: "Consider adjusting antihypertensive medication dosage",
+    text: "Order repeat HbA1c/CMP and consider intensifying glycemic therapy",
     acknowledged: false,
   },
   {
     id: "r2",
     patientId: "1",
-    text: "Check for potential medication interaction with OTC pain relievers",
+    text: `Schedule urgent chronic-care visit given ${SARAH_VISIT_GAP_DAYS}-day gap and rising BP`,
     acknowledged: false,
   },
   {
     id: "r3",
     patientId: "2",
-    text: "Schedule follow-up to discuss fatigue symptoms",
+    text: "Outreach for HF medication adherence and volume assessment",
     acknowledged: false,
   },
 ]
@@ -352,16 +240,10 @@ export const doctorProfile: DoctorProfile = {
   id: "d1",
   name: "Dr. Sarah Wilson",
   specialization: "Internal Medicine",
+  npi: "1679584731",
   email: "sarah.wilson@clinic.com",
   phone: "+1 (555) 123-4567",
   photo: "/avatars/doctor.jpg",
-}
-
-export const dashboardStats = {
-  totalPatients: 248,
-  highRiskPatients: 12,
-  alertsToday: 8,
-  missedMedications: 15,
 }
 
 // ─── Provider Search ───────────────────────────────────────────────────────────

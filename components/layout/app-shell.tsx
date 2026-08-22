@@ -1,8 +1,11 @@
 "use client"
 
-import { Sidebar } from "./sidebar"
-import { Header } from "./header"
+import { ClinicianShell } from "@/components/layout/clinician-shell"
 import { AuthGuard } from "@/components/auth/auth-guard"
+import { ClinicianComplianceFooter } from "@/components/layout/clinician-compliance-footer"
+import { ClinicianDataProvider } from "@/components/providers/clinician-data-provider"
+import { ClinicianMessagesProvider } from "@/components/providers/clinician-messages-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 interface AppShellProps {
   children: React.ReactNode
@@ -11,13 +14,15 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   return (
     <AuthGuard>
-      <div className="min-h-screen bg-background">
-        <Sidebar />
-        <Header />
-        <main className="ml-64 pt-16">
-          <div className="p-6">{children}</div>
-        </main>
-      </div>
+      <ClinicianDataProvider>
+        <ClinicianMessagesProvider>
+          <ClinicianShell>
+            {children}
+            <ClinicianComplianceFooter />
+            <Toaster />
+          </ClinicianShell>
+        </ClinicianMessagesProvider>
+      </ClinicianDataProvider>
     </AuthGuard>
   )
 }

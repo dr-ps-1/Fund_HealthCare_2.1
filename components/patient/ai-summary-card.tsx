@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Sparkles, ChevronRight } from "lucide-react"
+import { ClipboardList, ChevronRight } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -22,13 +22,13 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
   if (!summary) {
     return (
       <Card>
-        <CardHeader className="flex flex-row items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg">AI Summary</CardTitle>
+        <CardHeader className="flex flex-row items-center gap-2 pb-2">
+          <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-base">Chart summary</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground">
-            No AI summary available yet.
+            No chart summary available yet.
           </p>
         </CardContent>
       </Card>
@@ -37,10 +37,10 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
 
   return (
     <>
-      <Card className="border-primary/20 bg-primary/5">
-        <CardHeader className="flex flex-row items-center gap-2">
-          <Sparkles className="h-5 w-5 text-primary" />
-          <CardTitle className="text-lg text-primary">{summary.title}</CardTitle>
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-2 pb-2">
+          <ClipboardList className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-base">{summary.title}</CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="flex flex-col gap-2">
@@ -49,16 +49,17 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
                 key={index}
                 className="flex items-start gap-2 text-sm text-foreground"
               >
-                <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                 <span>{insight}</span>
               </li>
             ))}
           </ul>
           <Button
+            variant="outline"
             className="mt-4 w-full"
             onClick={() => setIsModalOpen(true)}
           >
-            View Full Summary
+            View full summary
           </Button>
         </CardContent>
       </Card>
@@ -66,14 +67,11 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-primary" />
-              {summary.title}
-            </DialogTitle>
+            <DialogTitle>{summary.title}</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">
-              Generated on{" "}
+              Generated{" "}
               {new Date(summary.generatedAt).toLocaleDateString("en-US", {
                 month: "long",
                 day: "numeric",
@@ -86,10 +84,10 @@ export function AISummaryCard({ summary }: AISummaryCardProps) {
               {summary.insights.map((insight, index) => (
                 <li
                   key={index}
-                  className="flex items-start gap-3 rounded-lg border border-border p-3"
+                  className="flex items-start gap-3 rounded-lg border border-border p-3 text-sm"
                 >
-                  <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                  <span className="text-sm">{insight}</span>
+                  <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span>{insight}</span>
                 </li>
               ))}
             </ul>

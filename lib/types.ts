@@ -1,5 +1,8 @@
 export type PatientStatus = "green" | "yellow" | "red"
 
+/** US panel triage labels shown to clinicians (maps from PatientStatus). */
+export type PanelStatusLabel = "OK" | "Attention" | "Urgent"
+
 export interface Patient {
   id: string
   name: string
@@ -7,11 +10,30 @@ export interface Patient {
   photo: string
   condition: string
   diagnosis: string
+  /** Clinical risk 0–100 (higher = worse). Used for doctor triage. */
   riskScore: number
   status: PatientStatus
   lastActivity: string
   lastUpdate: string
   adherenceScore: number
+  /** Days since last ambulatory encounter. */
+  daysSinceVisit: number
+  lastVisitDate: string
+  icdCodes: string[]
+  medications: string[]
+  allergies: string[]
+  /** Primary lab/vital callout for list views, e.g. "HbA1c 9.2%". */
+  keyMetric: string
+  city?: string
+  state?: string
+  zip?: string
+  /** US display: MM/DD/YYYY */
+  dateOfBirth?: string
+  insurancePayer?: string
+  insurancePlan?: string
+  memberId?: string
+  /** Annual wellness visit — US Medicare context */
+  lastAwvDate?: string
 }
 
 export interface Alert {
@@ -71,10 +93,20 @@ export interface AIRecommendation {
   acknowledged: boolean
 }
 
+export interface PreVisitBrief {
+  patientId: string
+  overview: string
+  history: string[]
+  currentProblems: string[]
+  recommendations: string[]
+}
+
 export interface DoctorProfile {
   id: string
   name: string
   specialization: string
+  /** NPI — US National Provider Identifier (display context for demo). */
+  npi: string
   email: string
   phone: string
   photo: string

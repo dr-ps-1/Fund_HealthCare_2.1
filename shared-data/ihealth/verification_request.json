@@ -1,0 +1,30 @@
+{
+  "id": "vr-1",
+  "source": "FraudShield (S2)",
+  "patientId": "1",
+  "visitDate": "March 15, 2026",
+  "providerName": "Dr. Wilson",
+  "headline": "Please confirm your visit on March 15",
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Did you attend an in-person visit with Dr. Wilson on March 15?"
+    },
+    {
+      "id": "q2",
+      "prompt": "Was the visit related to diabetes or blood pressure?"
+    },
+    {
+      "id": "q3",
+      "prompt": "Did you receive any new prescriptions that day?"
+    },
+    {
+      "id": "q4",
+      "prompt": "About how long did the visit last?"
+    },
+    {
+      "id": "q5",
+      "prompt": "Would you recognize the clinic location if shown on a map?"
+    }
+  ]
+}

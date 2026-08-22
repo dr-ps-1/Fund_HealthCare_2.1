@@ -1,0 +1,51 @@
+{
+  "demoStarPatientId": "9",
+  "demoSecondaryPatientId": "1",
+  "patients": [
+    {
+      "id": "9",
+      "name": "Ava Jackson",
+      "age": 63,
+      "condition": "Hypertension",
+      "diagnosis": "Essential Hypertension; Mild Persistent Asthma",
+      "riskScore": 52,
+      "status": "yellow",
+      "daysSinceVisit": 24,
+      "icdCodes": ["I10", "J45.30"],
+      "medications": [
+        "Losartan 50 mg daily",
+        "Amlodipine 5 mg daily",
+        "Symbicort 160/4.5",
+        "Albuterol HFA PRN"
+      ],
+      "allergies": [],
+      "keyMetric": "BP 152/88",
+      "city": "Palo Alto",
+      "state": "CA",
+      "zip": "94301"
+    },
+    {
+      "id": "1",
+      "name": "Sarah Johnson",
+      "age": 71,
+      "condition": "Diabetes Type 2",
+      "diagnosis": "Type 2 Diabetes Mellitus with Essential Hypertension",
+      "riskScore": 88,
+      "healthScore": 68,
+      "status": "red",
+      "daysSinceVisit": 67,
+      "lastVisitDate": "2026-01-12",
+      "icdCodes": ["E11.9", "I10"],
+      "medications": [
+        "Metformin 1000 mg BID",
+        "Lisinopril 20 mg daily",
+        "Atorvastatin 40 mg nightly"
+      ],
+      "allergies": ["Penicillin"],
+      "keyMetric": "HbA1c 9.2%",
+      "city": "Miami",
+      "state": "FL",
+      "zip": "33101"
+    }
+  ]
+}

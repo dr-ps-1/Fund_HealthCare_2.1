@@ -1,7 +1,7 @@
 import type { Provider, ProviderRisk } from "./types"
 import { providers } from "./mock-data"
 
-// Средний usageCount по всем кодам всех провайдеров — базовая линия для сравнения
+// Mean billing-code usage across all providers — baseline for outlier risk.
 function getBaselineAverage(): number {
   const allCounts = providers.flatMap((p) => p.billingCodes.map((c) => c.usageCount))
   return allCounts.reduce((sum, n) => sum + n, 0) / allCounts.length

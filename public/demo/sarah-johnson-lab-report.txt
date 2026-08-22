@@ -1,0 +1,14 @@
+Patient: Sarah Johnson
+DOB: 1955-03-12
+Collection Date: 2026-03-18
+Ordering Physician: Dr. Sarah Wilson, Internal Medicine
+
+CHEMISTRY / DIABETES PANEL
+Glucose, fasting ........ 186 mg/dL (Ref 70-99) HIGH
+Hemoglobin A1c .......... 9.1 % (Ref <5.7; diabetic goal <7.0) HIGH
+Creatinine .............. 0.98 mg/dL
+eGFR .................... 68 mL/min/1.73m2
+
+VITALS (clinic)
+Blood Pressure .......... 146/90 mmHg
+Weight .................. 177 lbs
