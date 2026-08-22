@@ -16,9 +16,19 @@ Entry: `/` → `/login` → `/doctor`.
 
 ## Tech stack
 
-- [Next.js 16](https://nextjs.org) (App Router) + React 19
-- TypeScript 5.7, Tailwind CSS v4, [shadcn/ui](https://ui.shadcn.com)
-- Optional: [Groq](https://console.groq.com) for AI briefs, [Supabase](https://supabase.com) for persistence
+Same platform family as Vita (patient 1.1). This repo is the **clinician workspace** (module 2.1).
+
+- [Next.js 16](https://nextjs.org) (App Router)
+- [React 19](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org) 5.7
+- [Supabase](https://supabase.com) (`@supabase/supabase-js`, `@supabase/ssr`) — optional panel persistence; without env keys the app runs on mock data
+- [Groq](https://console.groq.com) (OpenAI-compatible chat completions) — optional visit prep / Ask AI; mock fallbacks if unset
+- [Tailwind CSS](https://tailwindcss.com) 4 + [shadcn/ui](https://ui.shadcn.com) (Radix UI)
+- [Zod](https://zod.dev) — env and payload validation
+- [Recharts](https://recharts.org) — population / B2B charts
+- [unpdf](https://github.com/unjs/unpdf) — lab report text extraction
+
+GitHub’s **Languages** bar on the right is not the stack. It only counts file extensions (`.ts`/`.tsx` → TypeScript, `.css` → CSS). Next.js, React, Tailwind, Supabase, and Groq live in those TypeScript files and in `package.json`, so they do not get their own slices.
 
 ## Getting started
 
